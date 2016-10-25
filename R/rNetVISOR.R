@@ -1,5 +1,7 @@
 
 library(igraph)
+data(expd.edges.1)
+data(expd.nodes.1)
 
 #' Convert HSV Color values to Hex Color
 #'
