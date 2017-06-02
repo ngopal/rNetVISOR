@@ -25,7 +25,17 @@ generateNewValidation <- function(paneled = T) {
   
   smarg <- barabasi.game(10, directed = F)
   csmarg <- smarg
-  rptdf <- cbind(sample(15:30, 10, replace = T), rep(0, 10), degree(csmarg), rep(4, 10), sample(c(1.5:5), 10, replace = T), sample(1:100, 10) / 100, sample(1:100, 10) / 100, sample(1:100, 10) / 100)
+  # selected ~ nodeshape + network + nodeheight + numConnected + 
+  # nodeborderwidth + nodeHue + nodeSaturation + nodeValue
+  rptdf <- cbind(sample(15:30, 10, replace = T), #nodeheight
+                 rep(0, 10),     
+                 degree(csmarg), #numConnected
+                 rep(4, 10),     #numNodes
+                 sample(c(1.5:5), 10, replace = T), #nodeborderwidth
+                 sample(1:100, 10) / 100, #nodeHue
+                 sample(1:100, 10) / 100, #nodeSaturation
+                 sample(1:100, 10) / 100) #nodeValue
+  ptc <- expd.nodes.1[5,]
   
   scores <- vector();
   for (i in 1:10) {
@@ -33,8 +43,9 @@ generateNewValidation <- function(paneled = T) {
     scores <- append(scores, predict(rf1.nodes.1, ptc))
   }
   
+  
   for (k in unique(rptdf[,5] / max(rptdf[,5]))) {
-    add.vertex.shape(paste("fcircle",k,sep=''), clip=igraph.shape.noclip,
+    add.vertex.shape(paste("fcircle",k,sep=''), clip=vertex.shapes("circle")$clip,
                      plot=mycircle, parameters=list(vertex.frame.color="black",
                                                     vertex.frame.width=k))
   }
@@ -43,25 +54,28 @@ generateNewValidation <- function(paneled = T) {
   lay <- layout.auto(csmarg)
   
   if (paneled) {
+    dev.off()
     par(mfrow=c(1,3))
+    par(mfrow=c(1,2))
     # Template
     V(csmarg)$label <- NA
     V(csmarg)$size <- rptdf[,1]
     V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    #plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
     # With Score
-    V(csmarg)$label <- round(scores, 2) 
-    V(csmarg)$size <- rptdf[,1]
-    #V(csmarg)$shape <- paste("fcircle",rptdf[,5],sep='')
-    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    # V(csmarg)$label <- round(scores, 2) 
+    # V(csmarg)$size <- rptdf[,1]
+    # V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
+    # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
     # With Heatmap
     V(csmarg)$label <- NA
     V(csmarg)$size <- rptdf[,1]
     V(csmarg)$color <- brewer.pal(9, "Reds")[round(scores*10, 0)]
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    #plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
   }
   else {
     dev.off()
@@ -70,18 +84,21 @@ generateNewValidation <- function(paneled = T) {
     V(csmarg)$size <- rptdf[,1]
     #V(csmarg)$shape <- paste("fcircle",rptdf[,5],sep='')
     V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
     # With Heatmap
     V(csmarg)$label <- NA
     V(csmarg)$size <- rptdf[,1]
     V(csmarg)$color <- brewer.pal(9, "Reds")[round(scores*10, 0)]
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
     # Template
     V(csmarg)$size <- rptdf[,1]
     V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
-    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
+    plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
   }
   
 }
@@ -117,22 +134,28 @@ generateNewValidationEdges <- function(paneled = T) {
   lay <- layout.auto(csmarg)
   
   if (paneled) {
-    par(mfrow=c(1,3))
+    # par(mfrow=c(1,3))
+    dev.off()
+    par(mfrow=c(1,2))
     # Template
     E(csmarg)$width <- rptdf[,1]
     E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    V(csmarg)$label <- NA
+    V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
     
-    # With Score
-    E(csmarg)$label <- round(scores, 2) 
-    E(csmarg)$width <- rptdf[,1]
-    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
-    plot(csmarg, layout = lay)
+    # # With Score
+    # E(csmarg)$label <- round(scores, 2) 
+    # E(csmarg)$width <- rptdf[,1]
+    # E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    # plot(csmarg, layout = lay)
     
     # With Heatmap
     E(csmarg)$label <- NA
     E(csmarg)$width <- rptdf[,1]
     E(csmarg)$color <- brewer.pal(9, "Reds")[rank(scores)]
+    V(csmarg)$label <- NA
+    V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
   }
   else {
@@ -141,34 +164,26 @@ generateNewValidationEdges <- function(paneled = T) {
     E(csmarg)$label <- round(scores, 2) 
     E(csmarg)$width <- rptdf[,1]
     E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    V(csmarg)$label <- NA
+    V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
     
     # With Heatmap
     E(csmarg)$label <- NA
     E(csmarg)$width <- rptdf[,1]
     E(csmarg)$color <- brewer.pal(9, "Reds")[rank(scores)]
+    V(csmarg)$label <- NA
+    V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
     
     # Template
     E(csmarg)$width <- rptdf[,1]
     E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    V(csmarg)$label <- NA
+    V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
