@@ -37,7 +37,6 @@ mycircle <- function(coords, v=NULL, params) {
   }
 
 
-
 #' Convert HSV Color values to Hex Color
 #'
 #' This function supports conversion of colors from the HSV scale to Hex scale. This function is a data.frame specific helper (wrapper) function that uses the built-in hsv function under the hood.
@@ -46,7 +45,9 @@ mycircle <- function(coords, v=NULL, params) {
 #' @export
 #' @examples
 #' hsvtohex()
-hsvtohex <- function(k) { return(hsv(h = rptdf[k,6], s = rptdf[k,7], v=rptdf[k,8])) }
+hsvtohex <- function(k, d) { 
+  return(hsv(h = d[k,6], s = d[k,7], v=d[k,8])) 
+  }
 
 #' Generate Three Panel (Node) Graph Display
 #'
@@ -95,7 +96,7 @@ generateNewValidation <- function(paneled = T) {
     # Template
     V(csmarg)$label <- NA
     V(csmarg)$size <- rptdf[,1]
-    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
+    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex, d=rptdf))
     #plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
     plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
@@ -118,7 +119,7 @@ generateNewValidation <- function(paneled = T) {
     V(csmarg)$label <- round(scores, 2) 
     V(csmarg)$size <- rptdf[,1]
     #V(csmarg)$shape <- paste("fcircle",rptdf[,5],sep='')
-    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
+    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex, d=rptdf))
     # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
     plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
     
@@ -131,7 +132,7 @@ generateNewValidation <- function(paneled = T) {
     
     # Template
     V(csmarg)$size <- rptdf[,1]
-    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex))
+    V(csmarg)$color <- unlist(lapply(1:10, FUN=hsvtohex, d=rptdf))
     # plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape="fcircle", layout = lay)
     plot(csmarg, vertex.frame.width=rptdf[,5], vertex.shape=function(x) paste("fcircle",k,sep=''), layout = lay)
   }
@@ -141,7 +142,9 @@ generateNewValidation <- function(paneled = T) {
 
 # Now for edges
 pte <- expd.edges.1[1,]
-hsvtohexedges <- function(k) { return(hsv(h = rptdf[k,3], s = rptdf[k,4], v=rptdf[k,5])) }
+hsvtohexedges <- function(k, d) {
+  return(hsv(h = d[k,3], s = d[k,4], v=d[k,5])) 
+  }
 
 #' Generate Three Panel (Edge) Graph Display
 #'
@@ -174,7 +177,7 @@ generateNewValidationEdges <- function(paneled = T) {
     par(mfrow=c(1,2))
     # Template
     E(csmarg)$width <- rptdf[,1]
-    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges, d=rptdf))
     V(csmarg)$label <- NA
     V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
@@ -198,7 +201,7 @@ generateNewValidationEdges <- function(paneled = T) {
     # With Score
     E(csmarg)$label <- round(scores, 2) 
     E(csmarg)$width <- rptdf[,1]
-    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges, d=rptdf))
     V(csmarg)$label <- NA
     V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
@@ -213,7 +216,7 @@ generateNewValidationEdges <- function(paneled = T) {
     
     # Template
     E(csmarg)$width <- rptdf[,1]
-    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges))
+    E(csmarg)$color <- unlist(lapply(1:numEdges, FUN=hsvtohexedges, d=rptdf))
     V(csmarg)$label <- NA
     V(csmarg)$color <- "gray"
     plot(csmarg, layout = lay)
