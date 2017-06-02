@@ -3,6 +3,41 @@ library(igraph)
 data(expd.edges.1)
 data(expd.nodes.1)
 
+#' MyCircle to render nodes
+#'
+#' This function supports conversion of colors from the HSV scale to Hex scale. This function is a data.frame specific helper (wrapper) function that uses the built-in hsv function under the hood.
+#' @param takes a row number (of the data frame that contains Hue, Saturation, and Value in columns 6, 7, and 8 respectively) as input.
+#' @keywords color, hex, hsv
+#' @export
+#' @examples
+#' mycircle()
+mycircle <- function(coords, v=NULL, params) {
+  vertex.color <- params("vertex", "color")
+  if (length(vertex.color) != 1 && !is.null(v)) {
+        vertex.color <- vertex.color[v]
+    }
+  vertex.size  <- 1/200 * params("vertex", "size")
+     if (length(vertex.size) != 1 && !is.null(v)) {
+     vertex.size <- vertex.size[v]
+    }
+  vertex.frame.color <- params("vertex", "frame.color")
+  if (length(vertex.frame.color) != 1 && !is.null(v)) {
+    vertex.frame.color <- vertex.frame.color[v]
+    }
+  vertex.frame.width <- params("vertex", "frame.width")
+  if (length(vertex.frame.width) != 1 && !is.null(v)) {
+      vertex.frame.width <- vertex.frame.width[v]
+      }
+    mapply(coords[,1], coords[,2], vertex.color, vertex.frame.color,
+                       vertex.size, vertex.frame.width,
+                       FUN=function(x, y, bg, fg, size, lwd) {
+                             symbols(x=x, y=y, bg=bg, fg=fg, lwd=lwd,
+                                                      circles=size, add=TRUE, inches=FALSE)
+                        })
+  }
+
+
+
 #' Convert HSV Color values to Hex Color
 #'
 #' This function supports conversion of colors from the HSV scale to Hex scale. This function is a data.frame specific helper (wrapper) function that uses the built-in hsv function under the hood.
